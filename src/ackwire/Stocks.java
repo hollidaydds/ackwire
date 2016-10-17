@@ -11,11 +11,12 @@ public class Stocks {
 	// 6 - Imperial
 	
 	private int [] stocks = new int[7];
-		
+	private boolean [] available = new boolean[7];	
     public void initializeStocks()
 	{
 	    for (int i = 0; i < 7; i++)
 	    {
+	    	available[i]=true;
 	    	stocks[i]=25;
 	    }
 	}
@@ -46,6 +47,20 @@ public class Stocks {
     	stocks[h2]=stocks[h2]-n/2;
     	
     	return (n/2);
+    }
+    
+    public void openHotel (int h){
+    	available[h]=true;
+    }
+    
+    public void closeHotel(int h ){
+    	available[h]=false;
+    }
+    public void printAvailable(){
+    	for(int i=0; i<available.length; i++){
+    		if(available[i]){System.out.println(i + 2 + ", ");}
+    	}
+    	
     }
     
     public void printStocks()

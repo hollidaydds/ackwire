@@ -14,6 +14,13 @@ public class Board2 {
 	    }
 	}
     
+    public void setHotel(int h){
+    	hotel=h;
+    }
+    
+    public int getHotel(){
+    	return hotel;
+    }
     public void printBoard(){
     	for (int i=0; i<108; i++){
     		if(i%12==0){System.out.println();}
@@ -30,12 +37,15 @@ public class Board2 {
     	return gameBoard[x];
     }
     
-    public void tryTile(int x){
+    public boolean tryTile(int x){
     	if(checkTile(x)!=0){System.out.println("Cannot place tile:  Illegal move or tile already placed.");}
     	if((checkTile(x-1)==0||checkLeft(x)) && (checkTile(x+1)==0 || checkRight(x)) && checkTile(x-12)==0  && checkTile(x-12)==0){
     		placeTile(x,1);
     	};
-    	if(checkOnes(x)) hotel++;
+    	if(checkOnes(x)){
+    		hotel++;
+    		return true;
+    	}
     	
     	if(getAdjacents(x)==1){
     		if(checkTile(x-1)!=0 && !checkLeft(x)) placeTile(x, checkTile(x-1));
@@ -55,6 +65,7 @@ public class Board2 {
     		int[]hotels = getHotels(x);
     		placeTile(x, merge(hotels[0], hotels[1]));
     		}
+		return false;
     	
     } 
     	
@@ -151,13 +162,20 @@ public class Board2 {
     		if(gameBoard[i]==o){gameBoard[i]=n;}
     	}
     }
+    
+    public void checkAvailable(int o, int n){
+    	for(int i=0; i<108; i++){
+    		if(gameBoard[i]==o){gameBoard[i]=n;}
+    	}
+    }
+    
 	public static void main(String[] args) {
 		
 		Board2 board = new Board2();
 		board.initializeBoard();
 		board.tryTile(3);
 		board.tryTile(23);
-		board.tryTile(24);
+	
 		board.tryTile(25);
 /*		board.tryTile(17);
 
@@ -170,8 +188,10 @@ public class Board2 {
 		board.tryTile(26);
 		
 		board.tryTile(13);*/
+		System.out.println(board.tryTile(25));
+		board.replaceTiles(0, 5);
 		board.printBoard();
 		System.out.println(board.hotel);
-
+		
 	}
 }

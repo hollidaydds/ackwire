@@ -89,7 +89,18 @@ public class Game {
 	
 	public void placeTile(Player p, int t)
 	{
-		board.tryTile(p.placeTile(t));
+		if(board.tryTile(p.placeTile(t))){System.out.println("New Hotel created!  Choose from available hotels");
+		stocks.printAvailable();
+		int hotel = scan.nextInt();
+		board.replaceTiles(board.getHotel()-1, hotel);
+		p.addShares(hotel-2, 1);
+		stocks.closeHotel(hotel-2);
+		stocks.buyStock(hotel-2, 1, 1);
+		p.printPlayer();
+		stocks.printStocks();
+		};
+		
+		
 	}
 
 	public void playGame(){
