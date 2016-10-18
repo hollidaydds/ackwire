@@ -86,15 +86,12 @@ public class Game {
 	public String getFirst(){
 		return firstMove;
 	}
-	public boolean[] updateAvailable(){
-		boolean[] available = board.getAvailable();
 
-		return available;
-	}
 	public void placeTile(Player p, int t)
 	{
 		if(board.checkMerger(p.peekTile(t))){System.out.println("MERGER!");}
 		if(board.tryTile(p.placeTile(t))==true){System.out.println("New Hotel created!  Choose from available hotels");
+		stocks.updateAvailable(updateAvailable());
 		stocks.printAvailable();
 		int hotel = scan.nextInt();
 		board.replaceTiles(board.getHotel()-1, hotel);
@@ -106,7 +103,18 @@ public class Game {
 		};
 		
 	}
-
+public boolean[] updateAvailable(){
+	boolean[] available = new boolean[7];
+	for(int i=0; i<available.length; i++){
+		available[i]=true;
+	}
+	for(int i: board.getBoard()){
+		if(i>1 && i<9){
+			available[i-2]=false;
+		}
+	}
+	return available;
+}
 	public void playGame(){
 		while(true){
 			for(Player p: players){

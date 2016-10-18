@@ -1,7 +1,5 @@
 package ackwire;
 
-import java.util.Arrays;
-
 public class Board2 {
 	private int[] gameBoard = new int[108];
 	private int hotel = 10;
@@ -133,10 +131,12 @@ public class Board2 {
     			max=i;
     			maxCount=count(i);
     		}
-    		if(i!=0 && i!=1 && i!=max ){
+       	}
+    	for(int i : tiles){
+    		if(i!=0 && i!=1 && i!=max){
     			min=i;
     		}
-       	}
+    	}
     	
     	hotels[0]=max;
     	hotels[1]=min;
@@ -220,10 +220,8 @@ public class Board2 {
     	}
     }
     
-    public void checkAvailable(int o, int n){
-    	for(int i=0; i<108; i++){
-    		if(gameBoard[i]==o){gameBoard[i]=n;}
-    	}
+    public int[] getBoard(){
+    	return gameBoard;
     }
     
 	public static void main(String[] args) {
