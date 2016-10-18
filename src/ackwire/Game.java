@@ -86,10 +86,15 @@ public class Game {
 	public String getFirst(){
 		return firstMove;
 	}
-	
+	public boolean[] updateAvailable(){
+		boolean[] available = board.getAvailable();
+
+		return available;
+	}
 	public void placeTile(Player p, int t)
 	{
-		if(board.tryTile(p.placeTile(t))){System.out.println("New Hotel created!  Choose from available hotels");
+		if(board.checkMerger(p.peekTile(t))){System.out.println("MERGER!");}
+		if(board.tryTile(p.placeTile(t))==true){System.out.println("New Hotel created!  Choose from available hotels");
 		stocks.printAvailable();
 		int hotel = scan.nextInt();
 		board.replaceTiles(board.getHotel()-1, hotel);
@@ -99,7 +104,6 @@ public class Game {
 		p.printPlayer();
 		stocks.printStocks();
 		};
-		
 		
 	}
 
@@ -123,5 +127,11 @@ public static void main(String[] args) {
 	game.board.printBoard();
 	System.out.println(game.getFirst());
 	game.playGame();
+/*	game.board.placeTile(2, 2);
+	game.board.placeTile(3, 2);
+	game.board.placeTile(12, 3);
+	game.board.placeTile(13, 3);
+	game.board.tryTile(14);*/
+	game.board.printBoard();
 	}
 }

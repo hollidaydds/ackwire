@@ -58,6 +58,13 @@ public class Player {
 		return currentTiles[i];
 	}
 	
+	public int peekTile(int t){
+		
+		int holder = currentTiles[t];
+		return holder;
+		
+	}
+	
 	public int placeTile(int t){
 		
 		int holder = currentTiles[t];

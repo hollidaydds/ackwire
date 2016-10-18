@@ -60,7 +60,10 @@ public class Stocks {
     	for(int i=0; i<available.length; i++){
     		if(available[i]){System.out.println(i + 2 + ", ");}
     	}
-    	
+    }
+    
+    public void updateAvailable(boolean[] a){
+    	available = a;
     }
     
     public void printStocks()
