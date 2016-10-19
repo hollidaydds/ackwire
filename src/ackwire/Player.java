@@ -88,7 +88,7 @@ public class Player {
 		//int[] stocks = {0,0,0,0,0,0,0};
 		Player player= new Player("Tom");
 		
-		player.addCash(2700);
+		player.spendCash(2700);
 		player.addShares(0, 3);
 		player.printPlayer();
 	}

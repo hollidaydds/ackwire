@@ -224,6 +224,10 @@ public class Board2 {
     	return gameBoard;
     }
     
+    public void setBoard(int[] b){
+    	this.gameBoard=b;
+    }
+    
 	public static void main(String[] args) {
 		
 		Board2 board = new Board2();

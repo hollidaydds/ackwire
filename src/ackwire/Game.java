@@ -10,7 +10,9 @@ public class Game {
 	private Player[] players;
 	private int[] tileBag = new int[108];
 	private String firstMove;
+	private boolean hotelOpen=false;
 	Scanner scan = new Scanner(System.in);
+	
 
 	public void initializeGame(){
 	
@@ -91,6 +93,7 @@ public class Game {
 	{
 		if(board.checkMerger(p.peekTile(t))){System.out.println("MERGER!");}
 		if(board.tryTile(p.placeTile(t))==true){System.out.println("New Hotel created!  Choose from available hotels");
+		hotelOpen=true;
 		stocks.updateAvailable(updateAvailable());
 		stocks.printAvailable();
 		int hotel = scan.nextInt();
@@ -101,26 +104,66 @@ public class Game {
 		p.printPlayer();
 		stocks.printStocks();
 		};
-		
 	}
-public boolean[] updateAvailable(){
-	boolean[] available = new boolean[7];
-	for(int i=0; i<available.length; i++){
-		available[i]=true;
-	}
-	for(int i: board.getBoard()){
-		if(i>1 && i<9){
-			available[i-2]=false;
+	public int buyStocks(Player p){
+		int[] purchase = new int[3]; 
+		int s;
+		int total = 0;
+		System.out.println("Please select your stocks. or enter -1 to skip");
+		stocks.printPlaced();
+		for(int i = 0; i<purchase.length; i++){
+			s=scan.nextInt();
+			if(s==-1)break;
+			p.addShares(s, 1);
+		    total+=stocks.buyStock(s, getTier(s+2), 1);
 		}
+		return total;
 	}
-	return available;
-}
+	
+	public int getTier(int h){
+		int c = board.count(h)-2;
+		if(c<7){return c;}
+		if(c>6 && c<11){return 6;}
+		if(c>10 && c<21){return 7;}
+		if(c>20 && c<31){return 8;}
+		if(c>30 && c<41){return 9;}
+		if(c>40){return 10;}
+		return 0;
+	}
+	//TODO Finish this after buy stocks complete.
+	public void processMerger(int x){
+    	Board2 boardCopy = new Board2();
+    	boardCopy.setBoard(board.getBoard());
+		if(boardCopy.getAdjacents(x)>1 && boardCopy.checkMerger(x)==true){
+    		int[]hotels = boardCopy.getHotels(x);
+    		int h = hotels[0];
+    		boardCopy.placeTile(x, boardCopy.merge(hotels[0], hotels[1]));
+    		boardCopy.checkOnes(x, h);
+    		processMerger(x);
+    	}
+	}
+	
+	public boolean[] updateAvailable(){
+		boolean[] available = new boolean[7];
+		for(int i=0; i<available.length; i++){
+			available[i]=true;
+			}
+		for(int i: board.getBoard()){
+			if(i>1 && i<9){
+				available[i-2]=false;
+			}
+		}
+		return available;
+	}
+	
 	public void playGame(){
 		while(true){
 			for(Player p: players){
 				System.out.println(p.getName()+": Place a tile please");
 				placeTile(p, scan.nextInt());
 				p.drawTile(drawTile());
+				if(hotelOpen)p.spendCash(buyStocks(p));
+				p.printPlayer();
 			}
 			board.printBoard();
 		}

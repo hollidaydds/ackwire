@@ -11,7 +11,8 @@ public class Stocks {
 	// 6 - Imperial
 	
 	private int [] stocks = new int[7];
-	private boolean [] available = new boolean[7];	
+	private boolean [] available = new boolean[7];
+	
     public void initializeStocks()
 	{
 	    for (int i = 0; i < 7; i++)
@@ -61,7 +62,11 @@ public class Stocks {
     		if(available[i]){System.out.println(i + 2 + ", ");}
     	}
     }
-    
+    public void printPlaced(){
+    	for(int i=0; i<available.length; i++){
+    		if(!available[i]){System.out.println(i + ", ");}
+    	}
+    }
     public void updateAvailable(boolean[] a){
     	available = a;
     }
