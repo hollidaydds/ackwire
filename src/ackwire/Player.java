@@ -39,6 +39,9 @@ public class Player {
 		holdings[h]-=n;
 	}
 	
+	public int shareCount(int h){
+		return holdings[h];
+	}
 	public void drawTile(int t){
 		int i = 0;
 		for(int tile : currentTiles)
@@ -72,6 +75,7 @@ public class Player {
 		return holder;
 		
 	}
+
 	public void printPlayer(){
 		System.out.println("Name: "+ name);
 		System.out.println("Total: "+ cash);

@@ -89,6 +89,7 @@ public class Game {
 		return firstMove;
 	}
 
+
 	public void placeTile(Player p, int t)
 	{
 		if(board.checkMerger(p.peekTile(t))){System.out.println("MERGER!");}
@@ -132,16 +133,30 @@ public class Game {
 	}
 	//TODO Finish this after buy stocks complete.
 	public void processMerger(int x){
-    	Board2 boardCopy = new Board2();
+    	
+		Board2 boardCopy = new Board2();
     	boardCopy.setBoard(board.getBoard());
-		if(boardCopy.getAdjacents(x)>1 && boardCopy.checkMerger(x)==true){
-    		int[]hotels = boardCopy.getHotels(x);
-    		int h = hotels[0];
-    		boardCopy.placeTile(x, boardCopy.merge(hotels[0], hotels[1]));
-    		boardCopy.checkOnes(x, h);
-    		processMerger(x);
+		if(boardCopy.getUniqueAdjacents(x).length>1 && boardCopy.checkMerger(x)==true){
+			System.out.println("Merger");
+			Boolean equal = true;
+			int[]hotels = boardCopy.getUniqueAdjacents(x);
+    		for(int i=0; i< hotels.length; i++){
+    			for(int j = 0; j<hotels.length; j++){
+    				if(i!=j && boardCopy.count(hotels[i])!=boardCopy.count(hotels[j])){equal=false;}
+    			}
+    		}
+    	if(equal){
+    		System.out.println("Which hotel would you like to keep?");
+    		for(int h : hotels){
+    			System.out.print(h +", ");
+    		}
+    	}	
+    		int pick = scan.nextInt();
+    		board.placeTile(108, pick);
     	}
 	}
+	
+	
 	
 	public boolean[] updateAvailable(){
 		boolean[] available = new boolean[7];
@@ -178,11 +193,19 @@ public static void main(String[] args) {
 	game.board.printBoard();
 	System.out.println(game.getFirst());
 	game.playGame();
-/*	game.board.placeTile(2, 2);
-	game.board.placeTile(3, 2);
-	game.board.placeTile(12, 3);
-	game.board.placeTile(13, 3);
-	game.board.tryTile(14);*/
-	game.board.printBoard();
+//	game.board.placeTile(2, 2);
+//	game.board.placeTile(3, 2);
+//	game.board.placeTile(12, 3);
+//	game.board.placeTile(13, 3);
+//	game.board.placeTile(26, 4);
+//	game.board.placeTile(38, 4);
+//
+//	game.processMerger(14);
+//	game.board.tryTile(14);
+//	game.board.printBoard();
+//	
+//	System.out.println(game.board.count(2));
+//	System.out.println(game.board.count(3));
+//	System.out.println(game.board.count(4));
 	}
 }

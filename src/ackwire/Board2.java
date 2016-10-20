@@ -1,13 +1,15 @@
 package ackwire;
 
 public class Board2 {
-	private int[] gameBoard = new int[108];
+	//  The board only needs 108 tile locations the 109th is for merge try breakers
+	//  Where hotel chains are of equal size.
+	private int[] gameBoard = new int[109];
 	private int hotel = 10;
 	
     /* initializes board set all locations to 0 */
     public void initializeBoard()
 	{
-	    for (int i = 0; i < 108; i++)
+	    for (int i = 0; i < 109; i++)
 	    {
 	    	gameBoard[i]=0;
 	    }
@@ -112,6 +114,45 @@ public class Board2 {
     	return i;
 
     }
+    
+    public int[] getUniqueAdjacents(int x){
+    	
+    	int [] adjacents = {-1,-1,-1,-1};
+    	int i =0;
+    	int numUnique = 0;
+    	int count = 0;
+    	if(checkTile(x-1)!=0 && checkTile(x-1)!=1 && !checkLeft(x)){adjacents[i]=checkTile(x-1); i++;} ;
+    	if(checkTile(x+1)!=0 && checkTile(x+1)!=1 && !checkRight(x)){adjacents[i]=checkTile(x+1); i++;};
+    	if(checkTile(x-12)!=0 && checkTile(x-12)!=1) {adjacents[i]=checkTile(x-12); i++;};
+    	if(checkTile(x+12)!=0 && checkTile(x+12)!=1) {adjacents[i]=checkTile(x+12); i++;};
+
+		for(i=0; i<4; i++){
+			for(int j=0; j<4; j++){
+				if(i!=j && adjacents[i]==adjacents[j])
+				{
+					adjacents[j]=-1;
+				}
+			}
+		}
+		for(int u:adjacents)
+		{
+			if(u!=-1)numUnique++;
+		}
+		int[] unique = new int[numUnique];
+		
+		for(int u:adjacents)
+		{
+			if(u!=-1){
+				unique[count]=u;
+				count++;
+				}
+		}
+		
+    	return unique;
+    }
+    
+    
+    
     public int[] getHotels(int x){
     	int max = 0;
     	int maxCount = 0;
@@ -192,7 +233,7 @@ public class Board2 {
     }
     public int count (int n){
     	int j = 0;
-    	for(int i=0; i<108; i++){
+    	for(int i=0; i<109; i++){
     		if (gameBoard[i]==n)j++;
     	}
     	return j;
