@@ -42,6 +42,15 @@ public class Stocks {
     	return (basePrice+(100*t))*n;
     }
     
+    public int payoutStock(int h, int t){
+    	
+    	int basePrice=2000;
+    	if(h>1 && h<5) basePrice+=1000;
+    	if(h>4) basePrice+=2000;
+    	
+    	return basePrice+(t*1000); 
+    }
+    
     // h1 = defunct hotel h2 = remaining hotel n = number of defunct to trade
     public int tradeStock(int h1, int h2, int n){
     	stocks[h1]=stocks[h1]+n;

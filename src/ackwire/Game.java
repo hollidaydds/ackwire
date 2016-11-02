@@ -92,7 +92,11 @@ public class Game {
 
 	public void placeTile(Player p, int t)
 	{
-		if(board.checkMerger(p.peekTile(t))){System.out.println("MERGER!");}
+		if(board.checkMerger(p.peekTile(t))){
+			System.out.println("MERGER!");
+			processMerger(t);
+
+		}
 		if(board.tryTile(p.placeTile(t))==true){System.out.println("New Hotel created!  Choose from available hotels");
 		hotelOpen=true;
 		stocks.updateAvailable(updateAvailable());
@@ -136,27 +140,94 @@ public class Game {
     	
 		Board2 boardCopy = new Board2();
     	boardCopy.setBoard(board.getBoard());
+    	int winner=-1;
+    	
 		if(boardCopy.getUniqueAdjacents(x).length>1 && boardCopy.checkMerger(x)==true){
-			System.out.println("Merger");
 			Boolean equal = true;
 			int[]hotels = boardCopy.getUniqueAdjacents(x);
-    		for(int i=0; i< hotels.length; i++){
-    			for(int j = 0; j<hotels.length; j++){
-    				if(i!=j && boardCopy.count(hotels[i])!=boardCopy.count(hotels[j])){equal=false;}
+    		
+		for(int i=0; i< hotels.length; i++){
+    		for(int j = 0; j<hotels.length; j++){
+    			if(i!=j && boardCopy.count(hotels[i])!=boardCopy.count(hotels[j])){equal=false;}
+    			if(i!=j && boardCopy.count(hotels[i]) > boardCopy.count(hotels[j])){winner=i;}
     			}
     		}
+		
     	if(equal){
     		System.out.println("Which hotel would you like to keep?");
     		for(int h : hotels){
     			System.out.print(h +", ");
     		}
-    	}	
+    		
     		int pick = scan.nextInt();
     		board.placeTile(108, pick);
+    		
+    		for(int h: hotels){
+    			if(h!=pick)
+    				mergePayout(h);
+    		}
+    		}
+    	else{
+    		for(int h:hotels){
+    			if(h!=winner){
+    				mergePayout(h);
+    			}
+    		}
     	}
+    	}
+		
+	}
+	//  Pays out first majority share holder and second majority share holder of dissolved stock.
+	public void mergePayout(int h){
+		int firstMaj=0;
+		int secMaj=0;
+		int payout = 0;
+		int[]shares = new int[players.length];
+		for(int i = 0; i<shares.length; i++){
+			shares[i] = players[i].shareCount(h-2);
+		}
+		for(int i =0; i<shares.length; i++){
+			if(shares[i]>firstMaj){
+				firstMaj = i;
+			}
+			else if(shares[i]==firstMaj || shares[i]>secMaj){
+				secMaj = i;
+			}
+		}
+		
+		if(firstMaj == secMaj){
+			payout = stocks.payoutStock(h, getTier(h));
+			players[firstMaj].addCash(payout/2);
+			players[secMaj].addCash(payout/2);
+		}
+		
+		if(shares[secMaj]==0){
+			payout = stocks.payoutStock(h, getTier(h));
+			players[firstMaj].addCash(payout + (payout/2));
+		}
+		
+		else 	players[firstMaj].addCash(payout);
+		 		players[secMaj].addCash(payout/2);
+		
 	}
 	
-	
+	public int[] mergerStockOptions(Player p, int h){
+		int[] result = {0,0,0};
+		if(p.shareCount(h)==0){
+			System.out.println("You have no shares of this hotel");
+			return result;
+		}
+		else {
+			System.out.println("trade?");
+			result[0]=scan.nextInt();
+			System.out.println("sell");
+			result[1]=scan.nextInt();
+			System.out.println("keep");
+			result[2]=scan.nextInt();
+			return result;
+		}
+		
+	}
 	
 	public boolean[] updateAvailable(){
 		boolean[] available = new boolean[7];
@@ -192,14 +263,23 @@ public static void main(String[] args) {
 	game.printPlayers();
 	game.board.printBoard();
 	System.out.println(game.getFirst());
-	game.playGame();
-//	game.board.placeTile(2, 2);
-//	game.board.placeTile(3, 2);
-//	game.board.placeTile(12, 3);
-//	game.board.placeTile(13, 3);
+//	game.playGame();
+	game.board.tryTile(2);
+	game.board.tryTile(3);
+	game.board.tryTile(12);
+	game.board.tryTile(13);
+
+	game.players[0].addShares(2, 5);
+	game.players[1].addShares(2, 7);
+	game.printPlayers();
+	game.mergePayout(2);
+	game.printPlayers();
+	//game.board.placeTile(14, 3);
 //	game.board.placeTile(26, 4);
 //	game.board.placeTile(38, 4);
-//
+//	game.board.printBoard();
+//	System.out.println(game.board.count(2));
+//	System.out.println(game.board.count(3));
 //	game.processMerger(14);
 //	game.board.tryTile(14);
 //	game.board.printBoard();
