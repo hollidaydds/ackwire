@@ -68,7 +68,7 @@ public class Stocks {
     }
     public void printAvailable(){
     	for(int i=0; i<available.length; i++){
-    		if(available[i]){System.out.println(i + 2 + ", ");}
+    		if(available[i]){System.out.print(i + 2 + " | ");}
     	}
     }
     public void printPlaced(){
@@ -84,8 +84,9 @@ public class Stocks {
     {
     	for(int i=0; i<7; i++)
     	{
-    		System.out.println(stocks[i]);
+    		System.out.print(stocks[i] + "|");
     	}
+    	System.out.println();
     }
     
 	public static void main(String[] args) {
