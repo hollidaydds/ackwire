@@ -263,17 +263,17 @@ public static void main(String[] args) {
 	game.printPlayers();
 	game.board.printBoard();
 	System.out.println(game.getFirst());
-//	game.playGame();
-	game.board.tryTile(2);
-	game.board.tryTile(3);
-	game.board.tryTile(12);
-	game.board.tryTile(13);
-
-	game.players[0].addShares(2, 5);
-	game.players[1].addShares(2, 7);
-	game.printPlayers();
-	game.mergePayout(2);
-	game.printPlayers();
+	game.playGame();
+//	game.board.tryTile(2);
+//	game.board.tryTile(3);
+//	game.board.tryTile(12);
+//	game.board.tryTile(13);
+//
+//	game.players[0].addShares(2, 5);
+//	game.players[1].addShares(2, 7);
+//	game.printPlayers();
+//	game.mergePayout(2);
+//	game.printPlayers();
 	//game.board.placeTile(14, 3);
 //	game.board.placeTile(26, 4);
 //	game.board.placeTile(38, 4);

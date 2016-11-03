@@ -79,10 +79,11 @@ public class Player {
 	public void printPlayer(){
 		System.out.println("Name: "+ name);
 		System.out.println("Total: "+ cash);
-		
+		System.out.print("Tiles: ");
 		for(int i=0; i< currentTiles.length; i++){
-			System.out.println("Tile: "+ currentTiles[i]);
+			System.out.print(" | "+ currentTiles[i]);
 		}
+		System.out.println();
 		for(int i =0; i<7; i++){
 			System.out.print("Hotel " + i +": " + holdings[i]+ "\t");
 		}
