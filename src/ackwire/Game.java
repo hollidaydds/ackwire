@@ -94,7 +94,7 @@ public class Game {
 	{
 		if(board.checkMerger(p.peekTile(t))){
 			System.out.println("MERGER!");
-			processMerger(t);
+			processMerger(p.peekTile(t));
 
 		}
 		if(board.tryTile(p.placeTile(t))==true){System.out.println("New Hotel created!  Choose from available hotels");
@@ -137,13 +137,14 @@ public class Game {
 	}
 	//TODO Finish this after buy stocks complete.
 	public void processMerger(int x){
-    	
+
 		Board2 boardCopy = new Board2();
     	boardCopy.setBoard(board.getBoard());
     	int winner=-1;
-    	
-		if(boardCopy.getUniqueAdjacents(x).length>1 && boardCopy.checkMerger(x)==true){
+
+    	if(boardCopy.getUniqueAdjacents(x).length>1 && boardCopy.checkMerger(x)==true){
 			Boolean equal = true;
+			System.out.println("2");
 			int[]hotels = boardCopy.getUniqueAdjacents(x);
     		
 		for(int i=0; i< hotels.length; i++){
@@ -168,6 +169,7 @@ public class Game {
     		}
     		}
     	else{
+    		System.out.println("4");
     		for(int h:hotels){
     			if(h!=winner){
     				mergePayout(h);
@@ -281,7 +283,10 @@ public static void main(String[] args) {
 //	System.out.println(game.board.count(2));
 //	System.out.println(game.board.count(3));
 //	game.processMerger(14);
-//	game.board.tryTile(14);
+//	game.board.printBoard();
+//	
+//	game.players[0].setTile(14);
+//	game.placeTile(game.players[0], 0);
 //	game.board.printBoard();
 //	
 //	System.out.println(game.board.count(2));

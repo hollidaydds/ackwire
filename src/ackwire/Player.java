@@ -67,6 +67,11 @@ public class Player {
 		return holder;
 		
 	}
+	public void setTile(int t){
+		
+		currentTiles[0]=t;
+			
+	}
 	
 	public int placeTile(int t){
 		
