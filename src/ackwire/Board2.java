@@ -15,14 +15,17 @@ public class Board2 {
 	    }
 	}
     
+    //  Sets tile number, 0 is unplaced 1 is placed and 2-9 are hotel chains. 
     public void setHotel(int h){
     	hotel=h;
     }
     
+    //  Returns current hotel number(name)
     public int getHotel(){
     	return hotel;
     }
     
+    //  Prints out current state of the board.
     public void printBoard(){
     	for (int i=0; i<108; i++){
     		if(i%12==0){System.out.println();}
@@ -31,6 +34,7 @@ public class Board2 {
     	System.out.println();
     }
     
+    //  Prints out the available hotels.
     public boolean[] getAvailable(){
     	int j=0;
     	boolean[]available = new boolean[7];
@@ -43,14 +47,17 @@ public class Board2 {
     	return available;
     }
     
+    //  Places the hotel (int x) at the board location (int n)
     public void placeTile(int x, int n){gameBoard[x]=n;}
     
+    //  Returns the tile at board location x.
     public int checkTile(int x){
     	if(x<0 || x>107){return 0;}
     	
     	return gameBoard[x];
     }
     
+    //  Tries to place a tile at this location.  If its a legal move it places the tile.
     public boolean tryTile(int x){
     	if(checkTile(x)!=0){System.out.println("Cannot place tile:  Illegal move or tile already placed.");}
     	if((checkTile(x-1)==0||checkLeft(x)) && (checkTile(x+1)==0 || checkRight(x)) && checkTile(x-12)==0  && checkTile(x-12)==0){
@@ -61,6 +68,7 @@ public class Board2 {
     		return true;
     	}
     	
+    	//  If only one adjacent tile check the adjacent tiles and place the appropriate tile.
     	if(getAdjacents(x)==1){
     		if(checkTile(x-1)!=0 && checkTile(x-1)!=1 && !checkLeft(x)){ 
     			placeTile(x, checkTile(x-1));
@@ -78,32 +86,24 @@ public class Board2 {
         		placeTile(x, checkTile(x+12));
         		checkOnes(x, checkTile(x+12));
         	}
-        	
-    		    		
     	};
     	
+    	//  If more than one adjacent but not a merger check adjacent tiles and place appropriate tile.
     	if(getAdjacents(x)>1 && checkMerger(x) == false){
         	if(checkTile(x-1)!=0) placeTile(x, checkTile(x-1));
         	if(checkTile(x+1)!=0) placeTile(x, checkTile(x+1));
         	if(checkTile(x-12)!=0) placeTile(x, checkTile(x-12));
         	if(checkTile(x+12)!=0) placeTile(x, checkTile(x+12));
     	}
+    	
+    	//  If placing tile creates a merger process it.  
     	if(getAdjacents(x)>1 && checkMerger(x)==true){
     		processMerger(x);
-//    		int[]hotels = getHotels(x);
-//    		int h = compareSize(hotels[0], hotels[1]);
-//    		placeTile(x, merge(hotels[0], hotels[1]));
-//    		checkOnes(x, h);
-//    		if(getAdjacents(x)>1 && checkMerger(x)==true){
-//    			hotels = getHotels(x);
-//    			placeTile(x, merge(hotels[0], hotels[1]));
-//    			checkOnes(x, h);
-//    		}
     	}
 		return false;
-    	
     } 
     	
+    //  Checks tiles adjacent to tile location x and returns how many are non 0 tiles. 
     public int getAdjacents(int x){
     	int i = 0;
     	if(checkTile(x-1)!=0 && checkTile(x-1)!=1 && !checkLeft(x)) i++;
@@ -115,6 +115,8 @@ public class Board2 {
 
     }
     
+    //  Checks adjacent tiles for uniqueness.  For checking for mergers or placed tiles that need 
+    //  to be integrated into a chain.
     public int[] getUniqueAdjacents(int x){
     	
     	int [] adjacents = {-1,-1,-1,-1};
@@ -151,8 +153,8 @@ public class Board2 {
     	return unique;
     }
     
-    
-    
+    //  Returns the hotels involved in the merger and sorts them based on chain size.
+    //  The largest chain remains on the board the others are absolved.
     public int[] getHotels(int x){
     	int max = 0;
     	int maxCount = 0;
@@ -183,6 +185,8 @@ public class Board2 {
     	hotels[1]=min;
     	return hotels;
     }
+    
+    //  Checks board position x to see if placing a tile there will result in a merger.
     public boolean checkMerger(int x){
     	boolean flag = false;
     	int j = 0;
@@ -201,6 +205,7 @@ public class Board2 {
     	return flag;
     }
     
+    //  If placing a hotel adjacent to a 1 that 1 is converted to the same number as the hotel being placed.
     public boolean checkOnes(int x, int h){
     	boolean flag = false;
     	
@@ -212,11 +217,21 @@ public class Board2 {
     	return flag;
     }
     
+    //  Checks if tile location x is on the left edge of the board.  If this is true than x-1 is not adjacent.
     public boolean checkLeft(int x){
     	boolean flag= false;
     	if(x%12==0)flag=true;
     	return flag;
     }
+    
+    //  Checks if tile location is on the right edge of the board.  If this is true than x+1 is not adjacent.
+    public boolean checkRight(int x){
+    	boolean flag= false;
+    	if((x+1)%12==0)flag=true;
+    	return flag;
+    }
+    
+    //  Processes the merger.  Converts smaller hotel or hotels into the larger hotel and runs the pay-out method.
     public void processMerger(int x){
     	if(getAdjacents(x)>1 && checkMerger(x)==true){
     		int[]hotels = getHotels(x);
@@ -226,11 +241,8 @@ public class Board2 {
     		processMerger(x);
     	}
     }
-    public boolean checkRight(int x){
-    	boolean flag= false;
-    	if((x+1)%12==0)flag=true;
-    	return flag;
-    }
+
+    //  Counts the number of tiles on the board of type n.
     public int count (int n){
     	int j = 0;
     	for(int i=0; i<109; i++){
@@ -239,6 +251,7 @@ public class Board2 {
     	return j;
     }
     
+    //  Replaces tiles of defunct hotel with those of the new one.  Returns the surviving hotels tile number.
     public int merge(int n, int m){
     	if(count(n)>count(m)){
     		replaceTiles(m,n);
@@ -248,6 +261,7 @@ public class Board2 {
     	return m;
     }
     
+    //  Compares tile count of two types and returns the larger.
     public int compareSize(int n, int m){
     	if(count(n)>count(m)){
     		return n;
@@ -255,22 +269,26 @@ public class Board2 {
     	   	return m;
     }
     
+    //  Replaces all tiles on the board of type o with type n.
     public void replaceTiles(int o, int n){
     	for(int i=0; i<108; i++){
     		if(gameBoard[i]==o){gameBoard[i]=n;}
     	}
     }
     
+    //  Returns current board.
     public int[] getBoard(){
     	return gameBoard;
     }
     
+    //  Sets current board.
     public void setBoard(int[] b){
     	this.gameBoard=b;
     }
     
 	public static void main(String[] args) {
 		
+		//  Board function tests.
 		Board2 board = new Board2();
 		board.initializeBoard();
 		board.tryTile(1);

@@ -13,10 +13,10 @@ public class Game {
 	private boolean hotelOpen=false;
 	Scanner scan = new Scanner(System.in);
 	
-
+	//  Sets up the game.  Initializes the board, the players and the stocks.
 	public void initializeGame(){
 	
-		
+		//  Ask how many players.  Replace with number of players in the queue.
 		System.out.println("How many players? 3-6");
 		int n = scan.nextInt();
 		scan.nextLine();
@@ -29,19 +29,23 @@ public class Game {
 	
 		players = new Player[n];
 		
+	//  Ask for name for all the players.  Replace with getter from the queue.
 	for(int i=0; i<n; i++){
 		System.out.println("Enter a name for PLayer " + i + ": ");
 		
 		players[i]=new Player(scan.nextLine());
 		}
 	
-	
+	//  Creates all the tiles for the board.
 	for(int i=0; i<108; i++){
 		tileBag[i]=i;
 	}
+	//  Deal out single tile to each of the players.  
     for (Player p  : players) {
         p.drawTile(drawTile());
      }
+    
+    //  Looks for lowest tile to decide who plays first and places the initial tiles on the board.
     for (Player p  : players) {
     	int holder = 107;
     	if(p.getTile(0)/12 + p.getTile(0)%12 <holder)
@@ -52,6 +56,7 @@ public class Game {
         board.placeTile(p.placeTile(0),1);
      }
     
+    //  Deals full hands out to each player.
     for (Player p  : players) {
         for(int i=0; i<7; i++){
     	p.drawTile(drawTile());
@@ -59,7 +64,7 @@ public class Game {
     }	
 }
 
-	
+	//  Draws a random tile from the tile bag, no duplicate tiles should exist.
 	public int drawTile(){
 		Random r = new Random();
 		int drawn = r.nextInt(107);
@@ -79,24 +84,27 @@ public class Game {
 			return given;
 		}
 	}
-	
+	//  Prints out player names.
 	public void printPlayers(){
 	      for (Player p: players) {
 	          p.printPlayer();
 	       }
 	} 
+	//  Gets name of player who drew the lowest tile and goes first.
 	public String getFirst(){
 		return firstMove;
 	}
 
-
+	//  Places a tile at position t(0-6) in from player p's hand.
 	public void placeTile(Player p, int t)
 	{
+		//  If placing this tile creates a merger, process it.
 		if(board.checkMerger(p.peekTile(t))){
 			System.out.println("MERGER!");
 			processMerger(p.peekTile(t));
-
 		}
+		//  If placing a tile creates a new hotel prompt user for which one they want to create.
+		//  Replace with JSON message prompt to front end.
 		if(board.tryTile(p.placeTile(t))==true){System.out.println("New Hotel created!  Choose from available hotels");
 		hotelOpen=true;
 		stocks.updateAvailable(updateAvailable());
@@ -110,6 +118,8 @@ public class Game {
 		stocks.printStocks();
 		};
 	}
+	//  After tile is placed move on to stock purchase phase.  Player may buy up to 3 of the available stocks.
+	//  As of now it allows for input of stocks that have not yet been created.
 	public int buyStocks(Player p){
 		int[] purchase = new int[3]; 
 		int s;
@@ -124,7 +134,7 @@ public class Game {
 		}
 		return total;
 	}
-	
+	//  Returns the level (number of tiles in the chain) of the hotel chain for pay-out purposes.
 	public int getTier(int h){
 		int c = board.count(h)-2;
 		if(c<7){return c;}
@@ -136,6 +146,7 @@ public class Game {
 		return 0;
 	}
 	//TODO Finish this after buy stocks complete.
+	//  Creates a holder duplicate holder board for processing the merger.
 	public void processMerger(int x){
 
 		Board2 boardCopy = new Board2();
@@ -153,7 +164,8 @@ public class Game {
     			if(i!=j && boardCopy.count(hotels[i]) > boardCopy.count(hotels[j])){winner=i;}
     			}
     		}
-		
+		//  If the two hotel chains are equal prompt user for which chain the would like to 
+		//  remain on the board.
     	if(equal){
     		System.out.println("Which hotel would you like to keep?");
     		for(int h : hotels){
@@ -169,7 +181,7 @@ public class Game {
     		}
     		}
     	else{
-    		System.out.println("4");
+    		System.out.println("Payout for discarded hotels");
     		for(int h:hotels){
     			if(h!=winner){
     				mergePayout(h);
@@ -210,9 +222,9 @@ public class Game {
 		
 		else 	players[firstMaj].addCash(payout);
 		 		players[secMaj].addCash(payout/2);
-		
 	}
 	
+	//  Prompt user after merger occurs how many shares they would like to trade, sell or keep.
 	public int[] mergerStockOptions(Player p, int h){
 		int[] result = {0,0,0};
 		if(p.shareCount(h)==0){
@@ -231,6 +243,7 @@ public class Game {
 		
 	}
 	
+	//  Keeps track of which hotels are available to be placed.
 	public boolean[] updateAvailable(){
 		boolean[] available = new boolean[7];
 		for(int i=0; i<available.length; i++){
@@ -244,6 +257,7 @@ public class Game {
 		return available;
 	}
 	
+	//  Plays the game.  Need to add win and exit conditions.
 	public void playGame(){
 		while(true){
 			for(Player p: players){
