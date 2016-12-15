@@ -74,10 +74,12 @@ public class Stocks {
     }
     
     //  Prints out the hotels that are available (open) to be placed.
-    public void printAvailable(){
+    public String printAvailable(){
+    	String toReturn = "";
     	for(int i=0; i<available.length; i++){
-    		if(available[i]){System.out.print(i + 2 + " | ");}
+    		if(available[i]){System.out.print(i + 2 + " | "); toReturn.concat(i+2 + " | ");}
     	}
+    	return toReturn;
     }
     
     //  Prints out the hotels that are not available (closed) to be placed.
@@ -109,7 +111,7 @@ public class Stocks {
 		stock.initializeStocks();
 		System.out.println(stock.buyStock(2, 0, 1));
 		System.out.println(stock.buyStock(2, 0, 1));
-		System.out.println(stock.buyStock(2, 0, 1));
+		System.out.println(stock.printAvailable());
 
 		System.out.println(stock.sellStock(2, 0, 1));
 		System.out.println(stock.tradeStock(0, 1, 10));

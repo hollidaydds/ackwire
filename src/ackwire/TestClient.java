@@ -17,6 +17,8 @@ public class TestClient{
     void run()
     {
         try{
+
+
             //1. creating a socket to connect to the server
             requestSocket = new Socket("localhost", 8484);
             System.out.println("Connected to localhost in port 2004");
@@ -26,8 +28,9 @@ public class TestClient{
     	    while (requestSocket.isBound())
     	    {
     	      	try {
-    	      		System.out.println("enter message");
-    	      		String s = scan.nextLine();
+    	      		String s = in.readLine();
+    	      		System.out.println(s);
+    	      		s = scan.nextLine();
     	      		sendMessage(s);
     	      	}
     	    	finally{System.out.println("----------");}
@@ -42,7 +45,7 @@ public class TestClient{
     }
     private void sendMessage(String string) {
     	message.put("client", string);
-    	out.println(message.toString());
+    	out.println(string);
     	out.flush();
     	System.out.println("SENT");
     	}
