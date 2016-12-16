@@ -32,6 +32,7 @@ public class TestClient{
     	      		System.out.println(s);
     	      		s = scan.nextLine();
     	      		sendMessage(s);
+    	      		
     	      	}
     	    	finally{System.out.println("----------");}
     	}

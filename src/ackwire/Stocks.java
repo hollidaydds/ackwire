@@ -74,12 +74,20 @@ public class Stocks {
     }
     
     //  Prints out the hotels that are available (open) to be placed.
-    public String printAvailable(){
-    	String toReturn = "";
+    public void printAvailable(){
     	for(int i=0; i<available.length; i++){
-    		if(available[i]){System.out.print(i + 2 + " | "); toReturn.concat(i+2 + " | ");}
+    		if(available[i]){System.out.print(i + 2 + " | ");}
     	}
-    	return toReturn;
+     }
+    
+    //  Prints hotels that are not open.  Can be placed on the board.
+    public String getAvailable(){
+    	String closedHotels = "Please pick your new hotel: "; 
+    	for(int i=0; i<available.length; i++){
+    		if (available[i]) closedHotels = closedHotels.concat(Integer.toString(i+2)+" | ");
+    		
+    	}
+    	return closedHotels;
     }
     
     //  Prints out the hotels that are not available (closed) to be placed.
@@ -87,6 +95,17 @@ public class Stocks {
     	for(int i=0; i<available.length; i++){
     		if(!available[i]){System.out.println(i + ", ");}
     	}
+    }
+    
+    //  Gets the hotels that are available to buy shares in for online game.
+    //  Prints hotels that are not open.  Can be placed on the board.
+    public String getPlaced(){
+    	String closedHotels = "Please pick a stock: "; 
+    	for(int i=0; i<available.length; i++){
+    		if (!available[i]) closedHotels = closedHotels.concat(Integer.toString(i+2)+" | ");
+    		
+    	}
+    	return closedHotels;
     }
     
     //  Set available hotels.
@@ -111,8 +130,8 @@ public class Stocks {
 		stock.initializeStocks();
 		System.out.println(stock.buyStock(2, 0, 1));
 		System.out.println(stock.buyStock(2, 0, 1));
-		System.out.println(stock.printAvailable());
-
+		System.out.println(stock.getAvailable() +  "get");
+		stock.printAvailable();
 		System.out.println(stock.sellStock(2, 0, 1));
 		System.out.println(stock.tradeStock(0, 1, 10));
 		stock.printStocks();

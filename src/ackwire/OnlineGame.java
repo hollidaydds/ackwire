@@ -45,17 +45,7 @@ public void run(){
         sendMessage("Connection successful");
   		initializeOnline();
   		playGame();
-        while (localSocket.isBound())
-	    {
-	      	try {
-	      		String s = in.readLine();
-	      		System.out.println(s);
-	      		out.println("connected son");
-	      		out.flush();
-	      		
-	      	}
-	    	finally{System.out.println("----------");}
-	}}
+	}
         // Game communication occurs here after connection is established. 
         
         catch(IOException ioException){
@@ -77,13 +67,12 @@ private void sendText(String string) {
 	System.out.println("server>" + message.toString());
 	}
 
-//Sets up the game.  Initializes the board, the players and the stocks.
-public void initializeOnline() throws IOException{
-	
+//  Sets up the game.  Initializes the board, the players and the stocks.
+public void initializeOnline() throws NumberFormatException, IOException{
+
 	//  Ask how many players.  Replace with number of players in the queue.
 	out.println("How many players? 3-6");
 	out.flush();
-	
 	int n = Integer.parseInt(in.readLine());
 	
 	board = new Board2();
@@ -94,55 +83,73 @@ public void initializeOnline() throws IOException{
 
 	players = new Player[n];
 	
-	//  Ask for name for all the players.  Replace with getter from the queue.
-	for(int i=0; i<n; i++){
-		out.println("Enter a name for PLayer " + i + ": ");
-		out.flush();
-		players[i]=new Player(in.readLine());
-		}
-	
-	//  Creates all the tiles for the board.
-	for(int i=0; i<108; i++){
-		tileBag[i]=i;
+//  Ask for name for all the players.  Replace with getter from the queue.
+for(int i=0; i<n; i++){
+	out.println("Enter a name for PLayer " + i + ": ");
+	out.flush();
+	players[i]=new Player(in.readLine());
 	}
-	//  Deal out single tile to each of the players.  
-	for (Player p  : players) {
-	    p.drawTile(drawTile());
-	 }
-	
-	//  Looks for lowest tile to decide who plays first and places the initial tiles on the board.
-	for (Player p  : players) {
-		int holder = 107;
-		if(p.getTile(0)/12 + p.getTile(0)%12 <holder)
-		{
-			holder = p.getTile(0);
-			firstMove = p.getName();
-		}
-	    board.placeTile(p.placeTile(0),1);
-	 }
-	
-	//  Deals full hands out to each player.
-	for (Player p  : players) {
-	    for(int i=0; i<7; i++){
-		p.drawTile(drawTile());
-	    }
-	}	
+
+//  Creates all the tiles for the board.
+for(int i=0; i<108; i++){
+	tileBag[i]=i;
+}
+//  Deal out single tile to each of the players.  
+for (Player p  : players) {
+    p.drawTile(drawTile());
+ }
+
+//  Looks for lowest tile to decide who plays first and places the initial tiles on the board.
+for (Player p  : players) {
+	int holder = 107;
+	if(p.getTile(0)/12 + p.getTile(0)%12 <holder)
+	{
+		holder = p.getTile(0);
+		firstMove = p.getName();
+	}
+    board.placeTile(p.placeTile(0),1);
+ }
+
+//  Deals full hands out to each player.
+for (Player p  : players) {
+    for(int i=0; i<7; i++){
+	p.drawTile(drawTile());
+    }
+}	
 }
 
-public void playGame() throws NumberFormatException, IOException{
-	while(true){
-		for(Player p: players){
-			out.println(p.getName()+": Place a tile please");
-			out.flush();
-			int input = Integer.parseInt(in.readLine());
-			placeTile(p, input);
-			p.drawTile(drawTile());
-			if(hotelOpen)p.spendCash(buyStocks(p));
+//  Draws a random tile from the tile bag, no duplicate tiles should exist.
+public int drawTile(){
+	Random r = new Random();
+	int drawn = r.nextInt(107);
+	int given;
+	if(tileBag[drawn]!=-1){
+		given = tileBag[drawn];
+		 tileBag[drawn]=-1;
+		return given;
+	}
+	else{
+		while(tileBag[drawn]==-1){
+			if(drawn==107){drawn=0;}
+			drawn++;
 		}
+		given = tileBag[drawn];	
+		tileBag[drawn]=-1;
+		return given;
 	}
 }
+//  Prints out player names.
+public void printPlayers(){
+      for (Player p: players) {
+          p.printPlayer();
+       }
+} 
+//  Gets name of player who drew the lowest tile and goes first.
+public String getFirst(){
+	return firstMove;
+}
 
-//Places a tile at position t(0-6) in from player p's hand.
+//  Places a tile at position t(0-6) in from player p's hand.
 public void placeTile(Player p, int t) throws NumberFormatException, IOException
 {
 	//  If placing this tile creates a merger, process it.
@@ -152,11 +159,10 @@ public void placeTile(Player p, int t) throws NumberFormatException, IOException
 	}
 	//  If placing a tile creates a new hotel prompt user for which one they want to create.
 	//  Replace with JSON message prompt to front end.
-	if(board.tryTile(p.placeTile(t))==true){
-	sendText("New Hotel created!  Choose from available hotels" + stocks.printAvailable());
+	if(board.tryTile(p.placeTile(t))==true){out.println(stocks.getAvailable());
+	out.flush();
 	hotelOpen=true;
 	stocks.updateAvailable(updateAvailable());
-	
 	int hotel = Integer.parseInt(in.readLine());
 	board.replaceTiles(board.getHotel()-1, hotel);
 	p.addShares(hotel-2, 1);
@@ -166,21 +172,23 @@ public void placeTile(Player p, int t) throws NumberFormatException, IOException
 	stocks.printStocks();
 	};
 }
-
 //  After tile is placed move on to stock purchase phase.  Player may buy up to 3 of the available stocks.
 //  As of now it allows for input of stocks that have not yet been created.
 public int buyStocks(Player p) throws NumberFormatException, IOException{
 	int[] purchase = new int[3]; 
 	int s;
 	int total = 0;
-	sendText("Please select your stocks. or enter -1 to skip");
-	stocks.printPlaced();
-	for(int i = 0; i<purchase.length; i++){
+	System.out.println("got here too!");
+	out.println(stocks.getPlaced());
+	out.flush();
+	
 		s=Integer.parseInt(in.readLine());
-		if(s==-1)break;
+		if(s==-1)return 0;
 		p.addShares(s, 1);
-	    total+=stocks.buyStock(s, getTier(s+2), 1);
-	}
+		p.addShares(s, 1);
+		p.addShares(s, 1);
+	    total+=(stocks.buyStock(s, getTier(s+2), 1)*3);
+	
 	return total;
 }
 //  Returns the level (number of tiles in the chain) of the hotel chain for pay-out purposes.
@@ -216,9 +224,11 @@ public void processMerger(int x) throws NumberFormatException, IOException{
 	//  If the two hotel chains are equal prompt user for which chain the would like to 
 	//  remain on the board.
 	if(equal){
-		System.out.println("Which hotel would you like to keep?");
+		out.println("Which hotel would you like to keep?");
+		out.flush();
 		for(int h : hotels){
-			System.out.print(h +", ");
+			out.print(h +", ");
+			out.flush();
 		}
 		
 		int pick = Integer.parseInt(in.readLine());
@@ -230,7 +240,8 @@ public void processMerger(int x) throws NumberFormatException, IOException{
 		}
 		}
 	else{
-		System.out.println("Payout for discarded hotels");
+		out.println("Payout for discarded hotels");
+		out.flush();
 		for(int h:hotels){
 			if(h!=winner){
 				mergePayout(h);
@@ -277,7 +288,8 @@ public void mergePayout(int h){
 public int[] mergerStockOptions(Player p, int h) throws NumberFormatException, IOException{
 	int[] result = {0,0,0};
 	if(p.shareCount(h)==0){
-		System.out.println("You have no shares of this hotel");
+		out.println("You have no shares of this hotel");
+		out.flush();
 		return result;
 	}
 	else {
@@ -306,32 +318,21 @@ public boolean[] updateAvailable(){
 	return available;
 }
 
-//  Draws a random tile from the tile bag, no duplicate tiles should exist.
-public int drawTile(){
-	Random r = new Random();
-	int drawn = r.nextInt(107);
-	int given;
-	if(tileBag[drawn]!=-1){
-		given = tileBag[drawn];
-		 tileBag[drawn]=-1;
-		return given;
-	}
-	else{
-		while(tileBag[drawn]==-1){
-			if(drawn==107){drawn=0;}
-			drawn++;
+//  Plays the game.  Need to add win and exit conditions.
+public void playGame() throws NumberFormatException, IOException{
+	while(true){
+		for(Player p: players){
+			out.println(p.getName()+": Place a tile please (0-6)");
+			out.flush();
+			placeTile(p, Integer.parseInt(in.readLine()));
+			p.drawTile(drawTile());
+			System.out.println("here!");
+			if(hotelOpen)p.spendCash(buyStocks(p));
+			p.printPlayer();
 		}
-		given = tileBag[drawn];	
-		tileBag[drawn]=-1;
-		return given;
+		board.printBoard();
 	}
 }
-//  Prints out player names.
-public void printPlayers(){
-      for (Player p: players) {
-          p.printPlayer();
-       }
-} 
 public static void main(String args[]){
     OnlineGame ackwire = new OnlineGame();
    
