@@ -42,7 +42,7 @@ public void run(){
         //  Setup ObjectInput and ObjectOutput streams
 	    in = new BufferedReader(new InputStreamReader(userConnection.getInputStream()));
 	    out = new PrintWriter(userConnection.getOutputStream(), true);
-        sendMessage("Connection successful");
+        //sendMessage("Connection successful");
   		initializeOnline();
   		playGame();
 	}
